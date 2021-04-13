@@ -11,10 +11,10 @@ GIT_TAG=$(shell if [ -z "`git status --porcelain`" ]; then git describe --exact-
 GIT_TREE_STATE=$(shell if [ -z "`git status --porcelain`" ]; then echo "clean" ; else echo "dirty"; fi)
 
 #  docker image publishing options
-DOCKER_PUSH?=false
-IMAGE_NAMESPACE?=argoproj
-VERSION?=latest
-BASE_VERSION:=latest
+DOCKER_PUSH?=true
+IMAGE_NAMESPACE?=may610
+VERSION?=sasl
+BASE_VERSION:=sasl
 
 override LDFLAGS += \
   -X ${PACKAGE}.version=${VERSION} \

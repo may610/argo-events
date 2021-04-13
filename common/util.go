@@ -165,6 +165,7 @@ func GetSecretVolumePath(selector *v1.SecretKeySelector) (string, error) {
 		return "", errors.New("secret key selector is nil")
 	}
 	return fmt.Sprintf("/argo-events/secrets/%s/%s", selector.Name, selector.Key), nil
+
 }
 
 // GetConfigMapFromVolume retrieves the value of mounted config map volume
@@ -276,6 +277,28 @@ func GetTLSConfig(config *apicommon.TLSConfig) (*tls.Config, error) {
 		c.Certificates = []tls.Certificate{clientCert}
 	}
 	return c, nil
+}
+
+func GetSASLConfig(config *apicommon.SASLConfig) (string, string, error) {
+	if config == nil {
+		return "", "", errors.New("SASLConfig is nil")
+	}
+	var saslUsername, saslPassword string
+	var err error
+	if config.SASLUsername != nil {
+		saslUsername, err = GetSecretFromVolume(config.SASLUsername)
+		if err != nil {
+			return "", "", err
+		}
+	}
+	if config.SASLPassword != nil {
+		saslPassword, err = GetSecretFromVolume(config.SASLPassword)
+		if err != nil {
+			return "", "", err
+		}
+	}
+	return saslUsername, saslPassword, nil
+
 }
 
 // VolumesFromSecretsOrConfigMaps builds volumes and volumeMounts spec based on

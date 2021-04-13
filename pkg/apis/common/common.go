@@ -128,6 +128,13 @@ type TLSConfig struct {
 	DeprecatedClientKeyPath string `json:"clientKeyPath,omitempty" protobuf:"bytes,6,opt,name=clientKeyPath"`
 }
 
+type SASLConfig struct {
+	// SASLUsername refers to the secret that contains sasl plaintext username
+	SASLUsername *corev1.SecretKeySelector `json:"saslUsername,omitempty" protobuf:"bytes,1,opt,name=saslUsername"`
+	// SASLPassword refers to the secret that contains tsasl plaintext password
+	SASLPassword *corev1.SecretKeySelector `json:"saslPassword,omitempty" protobuf:"bytes,2,opt,name=saslPassword"`
+}
+
 // Backoff for an operation
 type Backoff struct {
 	// The initial duration in nanoseconds or strings like "1s", "3m"

@@ -37,6 +37,17 @@ import (
 	"github.com/argoproj/argo-events/pkg/apis/eventsource/v1alpha1"
 )
 
+const (
+	// SASLTypePlaintext represents the SASL/PLAIN mechanism
+	SASLTypePlaintext = "PLAIN"
+	// SASLHandshakeV0 is v0 of the Kafka SASL handshake protocol. Client and
+	// server negotiate SASL auth using opaque packets.
+	SASLHandshakeV0 = int16(0)
+	// SASLHandshakeV1 is v1 of the Kafka SASL handshake protocol. Client and
+	// server negotiate SASL by wrapping tokens with Kafka protocol headers.
+	SASLHandshakeV1 = int16(1)
+)
+
 // EventListener implements Eventing kafka event source
 type EventListener struct {
 	EventSourceName  string
@@ -277,6 +288,18 @@ func getSaramaConfig(kafkaEventSource *v1alpha1.KafkaEventSource, log *zap.Sugar
 		}
 		config.Net.TLS.Config = tlsConfig
 		config.Net.TLS.Enable = true
+	}
+
+	if kafkaEventSource.SASL != nil {
+		saslUsername, saslPassword, err := common.GetSASLConfig(kafkaEventSource.SASL)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get the sasl configuration")
+		}
+		config.Net.SASL.Enable = true
+		config.Net.SASL.Mechanism = SASLTypePlaintext
+		config.Net.SASL.User = saslUsername
+		config.Net.SASL.Password = saslPassword
+		config.Net.SASL.Handshake = true
 	}
 
 	if kafkaEventSource.ConsumerGroup != nil {

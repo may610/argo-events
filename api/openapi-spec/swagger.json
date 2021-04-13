@@ -179,6 +179,19 @@
         }
       }
     },
+    "io.argoproj.common.SASLConfig": {
+      "type": "object",
+      "properties": {
+        "saslPassword": {
+          "description": "SASLPassword refers to the secret that contains tsasl plaintext password",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        },
+        "saslUsername": {
+          "description": "SASLUsername refers to the secret that contains sasl plaintext username",
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecretKeySelector"
+        }
+      }
+    },
     "io.argoproj.common.Status": {
       "description": "Status is a common structure which can be used for Status field.",
       "type": "object",
@@ -1355,6 +1368,10 @@
         "partition": {
           "description": "Partition name",
           "type": "string"
+        },
+        "sasl": {
+          "description": "SASL configuration for the kafka client.",
+          "$ref": "#/definitions/io.argoproj.common.SASLConfig"
         },
         "tls": {
           "description": "TLS configuration for the kafka client.",
